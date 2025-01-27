@@ -1,0 +1,6 @@
+package com.example.proyectopokdex
+
+data class MyPoke (
+    val name: String,
+    val type: String
+)
