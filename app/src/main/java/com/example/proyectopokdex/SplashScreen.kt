@@ -55,7 +55,7 @@ fun Splash(){
                 fontSize = 25.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
-                    .offset(y = -50.dp)
+                    .offset(y = (-50).dp)
             )
         }
     }
