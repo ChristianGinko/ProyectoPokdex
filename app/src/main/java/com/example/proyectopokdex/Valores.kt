@@ -1,6 +1,7 @@
 package com.example.proyectopokdex
 
-data class MyPoke (
+data class MyPoke(
     val name: String,
-    val type: String
+    val type: String,
+    val imageUrl: String
 )

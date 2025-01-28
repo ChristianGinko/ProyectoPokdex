@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,9 +36,10 @@ fun SplashScreen(navController: NavHostController) {
 fun Splash(){
     Box(modifier = Modifier.fillMaxSize()){
         Image(
-            painterResource(R.drawable.pok_mon_fondo_charizard),
+            painterResource(R.drawable.pokem_n_wallpaper),
             contentDescription = null,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.FillHeight
         )
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

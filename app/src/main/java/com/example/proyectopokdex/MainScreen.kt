@@ -57,97 +57,96 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.example.proyectopokdex.navigation.AppScreens
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.State
+import com.example.proyectopokdex.retrofit.RetrofitInstance
+import com.example.proyectopokdex.retrofit.getId
+import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.rememberAsyncImagePainter
 
 @Composable
-fun MainScreen(navController: NavController, pokes: List<MyPoke>) {
+fun MainScreen(navController: NavController, viewModel: PokemonViewModel) {
+    val pokes by viewModel.pokemonList
     MyPokes(navController, pokes)
 }
 
 @Composable
-fun MyComponent(
-    poke: MyPoke,
-){
-    Row(modifier = Modifier
-        .border(5.dp, Color.Black)
-        .padding(20.dp)
-        .fillMaxWidth()
+fun MyComponent(poke: MyPoke) {
+    Box(
+        modifier = Modifier
+            .border(5.dp, Color.Black)
+            .padding(10.dp)
+            .fillMaxWidth()
     ) {
-        MyText(poke)
+        Image(
+            painter = painterResource(R.drawable.pok_ball),
+            contentDescription = null,
+            contentScale = ContentScale.Fit
+        )
+        Row() {
+            Image(
+                painter = rememberAsyncImagePainter(poke.imageUrl),
+                contentDescription = poke.name,
+                modifier = Modifier.size(100.dp),
+                contentScale = ContentScale.Fit
+            )
+            MyText(poke)
+        }
     }
 }
 
 @Composable
-fun MyText(poke: MyPoke){
+fun MyText(poke: MyPoke) {
     Column(modifier = Modifier.padding(10.dp)) {
-        Box {
-            val outlineColor = Color(0xFF4052D9)
-            val textColor = Color(0xFFFFE031)
-
-            // Dibujar múltiples veces el texto alrededor para el efecto de contorno
-            for (dx in listOf(-2f, 2f)) {
-                for (dy in listOf(-2f, 2f)) {
-                    Text(
-                        text = poke.name,
-                        color = outlineColor,
-                        style = TextStyle(fontSize = 24.sp),
-                        modifier = Modifier.offset(dx.dp, dy.dp)
-                    )
-                }
-            }
-
-            // Texto principal encima del contorno
-            Text(
-                text = poke.name,
-                color = textColor,
-                style = TextStyle(fontSize = 24.sp)
-            )
-        }
-        Box {
-            val outlineColor = Color(0xFF4052D9)
-            val textColor = Color(0xFFFFE031)
-
-            // Dibujar múltiples veces el texto alrededor para el efecto de contorno
-            for (dx in listOf(-2f, 2f)) {
-                for (dy in listOf(-2f, 2f)) {
-                    Text(
-                        text = poke.type,
-                        color = outlineColor,
-                        style = TextStyle(fontSize = 24.sp),
-                        modifier = Modifier.offset(dx.dp, dy.dp)
-                    )
-                }
-            }
-
-            // Texto principal encima del contorno
-            Text(
-                text = poke.type,
-                color = textColor,
-                style = TextStyle(fontSize = 24.sp)
-            )
-        }
+        Text(
+            text = poke.name,
+            color = Color(0xFFFFE031),
+            style = TextStyle(fontSize = 24.sp)
+        )
     }
 }
 
 @Composable
 fun MyPokes(navController: NavController, pokes: List<MyPoke>) {
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .padding(
-            top = 30.dp,
-            bottom = 50.dp
-        )
+    LazyColumn(
+        modifier = Modifier
+            .padding(
+                top = 30.dp,
+                bottom = 50.dp
+            )
     ) {
-        Image(
-            painterResource(R.drawable.pok_dex_fondo),
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxSize()
-        )
-        LazyColumn {
-            items(pokes) { poke ->
-                MyComponent(
-                    poke = poke
-                )
+        items(pokes) { poke ->
+            MyComponent(
+                poke = poke
+            )
+        }
+    }
+}
+
+class PokemonViewModel : ViewModel() {
+    private val _pokemonList = mutableStateOf<List<MyPoke>>(emptyList())
+    val pokemonList: State<List<MyPoke>> = _pokemonList
+
+    init {
+        fetchPokemon()
+    }
+
+    private fun fetchPokemon() {
+        viewModelScope.launch {
+            try {
+                val response = RetrofitInstance.api.getAllPokemon()
+                _pokemonList.value = response.results.map { pokemon ->
+                    MyPoke(
+                        name = pokemon.name.capitalize(),
+                        type = "Desconocido", // Aquí podrías hacer otra petición para obtener el tipo
+                        imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.getId()}.png"
+                    )
+                }
+            } catch (e: Exception) {
+                println("Error al obtener Pokémon: ${e.message}")
             }
         }
     }

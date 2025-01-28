@@ -1,3 +1,4 @@
+/*
 package com.example.proyectopokdex
 
 object Lista {
@@ -15,3 +16,4 @@ object Lista {
         MyPoke("Moltres", "Fuego")
     )
 }
+*/
