@@ -92,12 +92,12 @@ fun MyComponent(poke: MyPoke) {
             modifier = Modifier
                 .offset(y = 50.dp)
         ) {
-            Image(
-                painter = rememberAsyncImagePainter(poke.imageUrl),
-                contentDescription = poke.name,
+            Text(
+                text = "#${poke.id}",
+                color = Color(0xFFFFE031),
+                style = TextStyle(fontSize = 35.sp),
                 modifier = Modifier
-                    .size(100.dp)
-                    .offset(x = 20.dp)
+                    .offset(x = 50.dp)
             )
             MyText(poke)
         }
@@ -112,7 +112,7 @@ fun MyText(poke: MyPoke) {
             color = Color(0xFFFFE031),
             style = TextStyle(fontSize = 35.sp),
             modifier = Modifier
-                .offset(x = 50.dp)
+                .offset(x = 70.dp)
         )
     }
 }
@@ -150,7 +150,7 @@ class PokemonViewModel : ViewModel() {
                     MyPoke(
                         name = pokemon.name.capitalize(),
                         type = "Desconocido", // Aquí podrías hacer otra petición para obtener el tipo
-                        imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.getId()}.png"
+                        id = pokemon.getId()
                     )
                 }
             } catch (e: Exception) {

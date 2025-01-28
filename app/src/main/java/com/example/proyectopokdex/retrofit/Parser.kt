@@ -13,5 +13,5 @@ data class Pokemon(
 )
 
 fun Pokemon.getId(): String {
-    return url.split("/".toRegex()).dropLast(1).last()
+    return url.split("/").filter { it.isNotEmpty() }.last()
 }
