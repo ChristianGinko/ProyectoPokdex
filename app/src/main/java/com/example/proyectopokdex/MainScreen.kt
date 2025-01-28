@@ -78,20 +78,26 @@ fun MyComponent(poke: MyPoke) {
     Box(
         modifier = Modifier
             .border(5.dp, Color.Black)
-            .padding(10.dp)
             .fillMaxWidth()
     ) {
         Image(
             painter = painterResource(R.drawable.pok_ball),
             contentDescription = null,
-            contentScale = ContentScale.Fit
+            modifier = Modifier
+                .fillMaxSize()
         )
-        Row() {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .offset(y = 50.dp)
+        ) {
             Image(
                 painter = rememberAsyncImagePainter(poke.imageUrl),
                 contentDescription = poke.name,
-                modifier = Modifier.size(100.dp),
-                contentScale = ContentScale.Fit
+                modifier = Modifier
+                    .size(100.dp)
+                    .offset(x = 20.dp)
             )
             MyText(poke)
         }
@@ -104,7 +110,9 @@ fun MyText(poke: MyPoke) {
         Text(
             text = poke.name,
             color = Color(0xFFFFE031),
-            style = TextStyle(fontSize = 24.sp)
+            style = TextStyle(fontSize = 35.sp),
+            modifier = Modifier
+                .offset(x = 50.dp)
         )
     }
 }
