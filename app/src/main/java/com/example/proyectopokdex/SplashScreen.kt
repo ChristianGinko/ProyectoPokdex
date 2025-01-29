@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,7 +35,13 @@ fun SplashScreen(navController: NavHostController) {
 
 @Composable
 fun Splash(){
-    Box(modifier = Modifier.fillMaxSize()){
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .padding(
+            top = 30.dp,
+            bottom = 50.dp
+        )
+    ){
         Image(
             painterResource(R.drawable.pokem_n_wallpaper),
             contentDescription = null,
