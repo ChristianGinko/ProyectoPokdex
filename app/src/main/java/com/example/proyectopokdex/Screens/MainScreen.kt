@@ -2,6 +2,7 @@ package com.example.proyectopokdex.Screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,6 +33,7 @@ import com.example.proyectopokdex.retrofit.RetrofitInstance
 import com.example.proyectopokdex.retrofit.getId
 import com.example.proyectopokdex.MyPoke
 import com.example.proyectopokdex.R
+import com.example.proyectopokdex.navigation.AppScreens
 
 @Composable
 fun MainScreen(navController: NavController, viewModel: PokemonViewModel) {
@@ -40,11 +42,15 @@ fun MainScreen(navController: NavController, viewModel: PokemonViewModel) {
 }
 
 @Composable
-fun MyComponent(poke: MyPoke) {
+fun MyComponent(
+    poke: MyPoke,
+    onItemClick: (MyPoke) -> Unit
+) {
     Box(
         modifier = Modifier
             .border(5.dp, Color.Black)
             .fillMaxWidth()
+            .clickable{onItemClick(poke)}
     ) {
         Image(
             painter = painterResource(R.drawable.pok_ball),
@@ -94,7 +100,10 @@ fun MyPokes(navController: NavController, pokes: List<MyPoke>) {
     ) {
         items(pokes) { poke ->
             MyComponent(
-                poke = poke
+                poke = poke,
+                onItemClick = {
+                    navController.navigate(AppScreens.DataScreen.route)
+                }
             )
         }
     }

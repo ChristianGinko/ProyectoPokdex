@@ -5,6 +5,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.proyectopokdex.Screens.DataScreen
 import com.example.proyectopokdex.Screens.MainScreen
 import com.example.proyectopokdex.Screens.PokemonViewModel
 import com.example.proyectopokdex.Screens.SplashScreen
@@ -23,6 +24,9 @@ fun AppNavigation() {
         }
         composable(AppScreens.MainScreen.route) {
             MainScreen(navController, pokemonViewModel) // Pasamos el ViewModel
+        }
+        composable(AppScreens.DataScreen.route){
+            DataScreen(navController)
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.proyectopokdex.Screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,21 +29,17 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.proyectopokdex.MyPoke
 import com.example.proyectopokdex.R
+import com.example.proyectopokdex.navigation.AppScreens
 import com.example.proyectopokdex.retrofit.RetrofitInstance
 import com.example.proyectopokdex.retrofit.getId
 import kotlinx.coroutines.launch
 
 @Composable
-fun Data(navController: NavController, viewModel: PokemonViewModel) {
-    val pokes by viewModel.pokemonList
-    DataScreen(navController)
-}
-
-@Composable
-fun DataScreen (){
+fun DataScreen (navController: NavController){
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .clickable{navController.navigate(AppScreens.MainScreen.route)}
     ){
         Image(
             painter = painterResource(R.drawable.pokedex_stats),
@@ -99,8 +96,10 @@ fun Stats() {
     }
 }
 
+/*
 @Preview(showBackground = true)
 @Composable
 fun DataScreenPreview(){
     DataScreen()
 }
+*/
