@@ -5,9 +5,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.proyectopokdex.MainScreen
-import com.example.proyectopokdex.PokemonViewModel
-import com.example.proyectopokdex.SplashScreen
+import com.example.proyectopokdex.Screens.MainScreen
+import com.example.proyectopokdex.Screens.PokemonViewModel
+import com.example.proyectopokdex.Screens.SplashScreen
 
 @Composable
 fun AppNavigation() {
