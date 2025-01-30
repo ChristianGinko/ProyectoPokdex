@@ -116,7 +116,7 @@ class PokemonViewModel : ViewModel() {
                     MyPoke(
                         name = pokemon.name.capitalize(),
                         type = "Desconocido", // Aquí podrías hacer otra petición para obtener el tipo
-                        id = pokemon.getId()
+                        id = pokemon.getId(),
                     )
                 }
             } catch (e: Exception) {
