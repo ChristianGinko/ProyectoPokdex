@@ -34,42 +34,44 @@ import com.example.proyectopokdex.retrofit.getId
 import com.example.proyectopokdex.MyPoke
 import com.example.proyectopokdex.R
 import com.example.proyectopokdex.navigation.AppScreens
+import com.example.proyectopokdex.retrofit.PokemonViewModel
 
 @Composable
 fun MainScreen(navController: NavController, viewModel: PokemonViewModel) {
     val pokes by viewModel.pokemonList
-    MyPokes(navController, pokes)
+    MyPokes(navController, viewModel, pokes)
 }
 
 @Composable
 fun MyComponent(
     poke: MyPoke,
-    onItemClick: (MyPoke) -> Unit
+    viewModel: PokemonViewModel,
+    navController: NavController
 ) {
     Box(
         modifier = Modifier
             .border(5.dp, Color.Black)
             .fillMaxWidth()
-            .clickable{onItemClick(poke)}
+            .clickable {
+                viewModel.setSelectedPokemon(poke) // Guardamos el Pokémon seleccionado
+                navController.navigate(AppScreens.DataScreen.route) // Navegamos a DataScreen
+            }
     ) {
         Image(
             painter = painterResource(R.drawable.pok_ball),
             contentDescription = null,
-            modifier = Modifier
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         )
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .offset(y = 50.dp)
+            modifier = Modifier.offset(y = 50.dp)
         ) {
             Text(
                 text = "#${poke.id}",
                 color = Color(0xFFFFE031),
                 style = TextStyle(fontSize = 35.sp),
-                modifier = Modifier
-                    .offset(x = 50.dp)
+                modifier = Modifier.offset(x = 50.dp)
             )
             MyText(poke)
         }
@@ -90,47 +92,12 @@ fun MyText(poke: MyPoke) {
 }
 
 @Composable
-fun MyPokes(navController: NavController, pokes: List<MyPoke>) {
+fun MyPokes(navController: NavController, viewModel: PokemonViewModel, pokes: List<MyPoke>) {
     LazyColumn(
-        modifier = Modifier
-            .padding(
-                top = 30.dp,
-                bottom = 50.dp
-            )
+        modifier = Modifier.padding(top = 30.dp, bottom = 50.dp)
     ) {
         items(pokes) { poke ->
-            MyComponent(
-                poke = poke,
-                onItemClick = {
-                    navController.navigate(AppScreens.DataScreen.route)
-                }
-            )
-        }
-    }
-}
-
-class PokemonViewModel : ViewModel() {
-    private val _pokemonList = mutableStateOf<List<MyPoke>>(emptyList())
-    val pokemonList: State<List<MyPoke>> = _pokemonList
-
-    init {
-        fetchPokemon()
-    }
-
-    private fun fetchPokemon() {
-        viewModelScope.launch {
-            try {
-                val response = RetrofitInstance.api.getAllPokemon()
-                _pokemonList.value = response.results.map { pokemon ->
-                    MyPoke(
-                        name = pokemon.name.capitalize(),
-                        type = "Desconocido", // Aquí podrías hacer otra petición para obtener el tipo
-                        id = pokemon.getId(),
-                    )
-                }
-            } catch (e: Exception) {
-                println("Error al obtener Pokémon: ${e.message}")
-            }
+            MyComponent(poke = poke, viewModel = viewModel, navController = navController)
         }
     }
 }

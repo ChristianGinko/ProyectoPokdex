@@ -8,7 +8,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -30,30 +33,43 @@ import androidx.navigation.NavController
 import com.example.proyectopokdex.MyPoke
 import com.example.proyectopokdex.R
 import com.example.proyectopokdex.navigation.AppScreens
+import com.example.proyectopokdex.retrofit.PokemonViewModel
 import com.example.proyectopokdex.retrofit.RetrofitInstance
 import com.example.proyectopokdex.retrofit.getId
 import kotlinx.coroutines.launch
 
 @Composable
-fun DataScreen (navController: NavController){
+fun DataScreen (navController: NavController, viewModel: PokemonViewModel){
+    val pokes by viewModel.pokemonList
+    Structure(navController, viewModel)
+}
+
+@Composable
+fun Structure(navController: NavController, viewModel: PokemonViewModel) {
+    val selectedPoke by viewModel.selectedPokemon
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .clickable{navController.navigate(AppScreens.MainScreen.route)}
-    ){
+            .clickable { navController.navigate(AppScreens.MainScreen.route) }
+    ) {
         Image(
             painter = painterResource(R.drawable.pokedex_stats),
             contentDescription = null,
             contentScale = ContentScale.FillHeight,
-            modifier = Modifier
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         )
-        Stats()
+
+        // Mostrar solo el Pokémon seleccionado
+        selectedPoke?.let { poke ->
+            Stats(poke = poke)
+        }
     }
 }
 
+
 @Composable
-fun Stats() {
+fun Stats(poke: MyPoke) {
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -71,7 +87,7 @@ fun Stats() {
                     .offset(x = (-30).dp)
             ) {
                 Text(
-                    text = "Name: Charmander",
+                    text = "Name: ${poke.name}",
                     style = TextStyle(fontSize = 25.sp)
                 )
                 Text(
@@ -79,12 +95,8 @@ fun Stats() {
                     style = TextStyle(fontSize = 25.sp)
                 )
             }
-            Image(
-                painter = painterResource(R.drawable.charmander),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(90.dp)
-                    .offset(x = 20.dp)
+            Text(
+                text = poke.imageUrl
             )
         }
         Row(){
@@ -100,6 +112,6 @@ fun Stats() {
 @Preview(showBackground = true)
 @Composable
 fun DataScreenPreview(){
-    DataScreen()
+    DataScreen(navController: NavController, poke: MyPoke)
 }
 */
