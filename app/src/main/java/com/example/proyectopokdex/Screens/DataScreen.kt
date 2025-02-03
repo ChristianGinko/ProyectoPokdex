@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.proyectopokdex.MyPoke
 import com.example.proyectopokdex.R
 import com.example.proyectopokdex.navigation.AppScreens
@@ -95,8 +96,9 @@ fun Stats(poke: MyPoke) {
                     style = TextStyle(fontSize = 25.sp)
                 )
             }
-            Text(
-                text = poke.imageUrl
+            AsyncImage(
+                model = poke.imageUrl,
+                contentDescription = "Imagen de ${poke.name}"
             )
         }
         Row(){
