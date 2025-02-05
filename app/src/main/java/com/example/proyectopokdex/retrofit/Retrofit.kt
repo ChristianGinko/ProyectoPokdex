@@ -15,6 +15,8 @@ interface PokeApiService {
     suspend fun getAllPokemon(): PokemonResponse
     @GET("type/")
     suspend fun getTypes(): TypeResponse
+    @GET("type/{name}/")
+    suspend fun getTypeDetail(@retrofit2.http.Path("name") name: String): TypeDetailResponse
 }
 
 object RetrofitInstance {
@@ -44,12 +46,26 @@ class PokemonViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val pokemonResponse = RetrofitInstance.api.getAllPokemon()
-                val typeResponse = RetrofitInstance.api.getTypes() // Aquí obtenemos los tipos
+                val typeResponse = RetrofitInstance.api.getTypes()
+
+                // Crear un mapa para almacenar una lista de tipos por Pokémon
+                val pokemonTypeMap = mutableMapOf<String, MutableList<String>>()
+
+                typeResponse.results.forEach { type ->
+                    val typeDetail = RetrofitInstance.api.getTypeDetail(type.name) // Obtener detalles del tipo
+                    typeDetail.pokemon.forEach { pokemonEntry ->
+                        val pokemonName = pokemonEntry.pokemon.name
+                        if (!pokemonTypeMap.containsKey(pokemonName)) {
+                            pokemonTypeMap[pokemonName] = mutableListOf()
+                        }
+                        pokemonTypeMap[pokemonName]?.add(type.name) // Agregar el tipo a la lista del Pokémon
+                    }
+                }
 
                 val pokemonWithTypes = pokemonResponse.results.map { pokemon ->
                     MyPoke(
                         name = pokemon.name.capitalize(),
-                        type = getTypeForPokemon(pokemon, typeResponse.results), // Asigna el tipo correcto
+                        type = pokemonTypeMap[pokemon.name]?.joinToString(", ") { it.capitalize() } ?: "Desconocido", // Juntar todos los tipos
                         id = pokemon.getId(),
                         imageUrl = pokemon.getImageUrl()
                     )
@@ -60,10 +76,6 @@ class PokemonViewModel : ViewModel() {
                 println("Error al obtener Pokémon: ${e.message}")
             }
         }
-    }
-
-    private fun getTypeForPokemon(pokemon: Pokemon, types: List<PokemonType>): String {
-        return types.random().name // Se asigna un tipo aleatorio como ejemplo
     }
 
     fun setSelectedPokemon(pokemon: MyPoke) {

@@ -22,6 +22,14 @@ data class PokemonType(
     val url: String
 )
 
+data class TypeDetailResponse(
+    val pokemon: List<PokemonTypeEntry>
+)
+
+data class PokemonTypeEntry(
+    val pokemon: Pokemon
+)
+
 fun Pokemon.getId(): String {
     return url.split("/").filter { it.isNotEmpty() }.last()
 }
