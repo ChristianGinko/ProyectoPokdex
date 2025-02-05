@@ -92,8 +92,8 @@ fun Stats(poke: MyPoke) {
                     style = TextStyle(fontSize = 25.sp)
                 )
                 Text(
-                    text = "Type: Fire",
-                    style = TextStyle(fontSize = 25.sp)
+                    text = "Type: ${poke.type}",
+                    style = TextStyle(fontSize = 15.sp)
                 )
             }
             AsyncImage(

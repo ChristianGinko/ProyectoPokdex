@@ -13,6 +13,8 @@ import retrofit2.http.GET
 interface PokeApiService {
     @GET("pokemon?limit=1304&offset=0")
     suspend fun getAllPokemon(): PokemonResponse
+    @GET("type/")
+    suspend fun getTypes(): TypeResponse
 }
 
 object RetrofitInstance {
@@ -41,19 +43,27 @@ class PokemonViewModel : ViewModel() {
     fun fetchPokemon() {
         viewModelScope.launch {
             try {
-                val response = RetrofitInstance.api.getAllPokemon()
-                _pokemonList.value = response.results.map { pokemon ->
+                val pokemonResponse = RetrofitInstance.api.getAllPokemon()
+                val typeResponse = RetrofitInstance.api.getTypes() // Aquí obtenemos los tipos
+
+                val pokemonWithTypes = pokemonResponse.results.map { pokemon ->
                     MyPoke(
                         name = pokemon.name.capitalize(),
-                        type = "Desconocido", // Aquí podrías hacer otra petición para obtener el tipo
+                        type = getTypeForPokemon(pokemon, typeResponse.results), // Asigna el tipo correcto
                         id = pokemon.getId(),
-                        imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.getId()}.png"
+                        imageUrl = pokemon.getImageUrl()
                     )
                 }
+
+                _pokemonList.value = pokemonWithTypes
             } catch (e: Exception) {
                 println("Error al obtener Pokémon: ${e.message}")
             }
         }
+    }
+
+    private fun getTypeForPokemon(pokemon: Pokemon, types: List<PokemonType>): String {
+        return types.random().name // Se asigna un tipo aleatorio como ejemplo
     }
 
     fun setSelectedPokemon(pokemon: MyPoke) {
