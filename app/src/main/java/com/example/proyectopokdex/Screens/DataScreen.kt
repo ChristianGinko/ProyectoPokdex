@@ -93,7 +93,7 @@ fun Stats(poke: MyPoke) {
                 )
                 Text(
                     text = "Type: ${poke.type}",
-                    style = TextStyle(fontSize = 15.sp)
+                    style = TextStyle(fontSize = 18.sp)
                 )
             }
             AsyncImage(
@@ -103,8 +103,8 @@ fun Stats(poke: MyPoke) {
         }
         Row(){
             Text(
-                text = "Abilities:\nBlaze\nSolar Power",
-                style = TextStyle(fontSize = 25.sp)
+                text = "Abilities: ${poke.ability}",
+                style = TextStyle(fontSize = 18.sp)
             )
         }
     }

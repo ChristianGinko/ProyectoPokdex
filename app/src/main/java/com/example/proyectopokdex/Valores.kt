@@ -4,5 +4,6 @@ data class MyPoke(
     val name: String,
     val type: String,
     val id: String,
-    val imageUrl: String
+    val imageUrl: String,
+    val ability: String
 )
