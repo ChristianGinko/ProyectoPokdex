@@ -9,18 +9,13 @@ import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Path
 
 interface PokeApiService {
     @GET("pokemon?limit=1304")
     suspend fun getAllPokemon(): PokemonResponse
-    @GET("type?limit=21/")
-    suspend fun getTypes(): TypeResponse
-    @GET("type/{name}/")
-    suspend fun getTypeDetail(@retrofit2.http.Path("name") name: String): TypeDetailResponse
-    @GET ("ability?limit=367/")
-    suspend fun getAbilities(): AbilityResponse
-    @GET ("ability/{name}/")
-    suspend fun getAbilityDetail(@retrofit2.http.Path("name") name: String): AbilityDetailResponse
+    @GET("pokemon/{name}/")
+    suspend fun getPokemonDetail(@Path("name") name: String): PokemonDetailResponse
 }
 
 object RetrofitInstance {
@@ -36,7 +31,7 @@ object RetrofitInstance {
 }
 
 class PokemonViewModel : ViewModel() {
-    val _pokemonList = mutableStateOf<List<MyPoke>>(emptyList())
+    private val _pokemonList = mutableStateOf<List<MyPoke>>(emptyList())
     val pokemonList: State<List<MyPoke>> = _pokemonList
 
     private val _selectedPokemon = mutableStateOf<MyPoke?>(null)
@@ -46,58 +41,58 @@ class PokemonViewModel : ViewModel() {
         fetchPokemon()
     }
 
-    fun fetchPokemon() {
+    private fun fetchPokemon() {
         viewModelScope.launch {
             try {
                 val pokemonResponse = RetrofitInstance.api.getAllPokemon()
-                val typeResponse = RetrofitInstance.api.getTypes()
-                val abilityResponse = RetrofitInstance.api.getAbilities()
-
-                // Crear un mapa para almacenar una lista de tipos por Pokémon
-                val pokemonTypeMap = mutableMapOf<String, MutableList<String>>()
-
-                typeResponse.results.forEach { type ->
-                    val typeDetail = RetrofitInstance.api.getTypeDetail(type.name) // Obtener detalles del tipo
-                    typeDetail.pokemon.forEach { pokemonEntry ->
-                        val pokemonName = pokemonEntry.pokemon.name
-                        if (!pokemonTypeMap.containsKey(pokemonName)) {
-                            pokemonTypeMap[pokemonName] = mutableListOf()
-                        }
-                        pokemonTypeMap[pokemonName]?.add(type.name) // Agregar el tipo a la lista del Pokémon
-                    }
-                }
-
-                val pokemonAbilityMap = mutableMapOf<String, MutableList<String>>()
-
-                abilityResponse.results.forEach { ability ->
-                    val abilityDetail = RetrofitInstance.api.getAbilityDetail(ability.name) // Obtener detalles del tipo
-                    abilityDetail.pokemon.forEach { pokemonEntry ->
-                        val pokemonName = pokemonEntry.pokemon.name
-                        if (!pokemonAbilityMap.containsKey(pokemonName)) {
-                            pokemonAbilityMap[pokemonName] = mutableListOf()
-                        }
-                        pokemonAbilityMap[pokemonName]?.add(ability.name) // Agregar el tipo a la lista del Pokémon
-                    }
-                }
-
-                val pokemonWithTypesAndAbilities = pokemonResponse.results.map { pokemon ->
+                val pokemonWithBasicData = pokemonResponse.results.map { pokemon ->
                     MyPoke(
-                        name = pokemon.name.capitalize(),
-                        type = pokemonTypeMap[pokemon.name]?.joinToString(", ") { it.capitalize() } ?: "Desconocido", // Juntar todos los tipos
+                        name = pokemon.name.replaceFirstChar(Char::uppercase),
+                        type = "Desconocido",
                         id = pokemon.getId(),
                         imageUrl = pokemon.getImageUrl(),
-                        ability = pokemonAbilityMap[pokemon.name]?.joinToString(", ") { it.capitalize() } ?: "Desconocido"
+                        ability = "Desconocido"
                     )
                 }
-
-                _pokemonList.value = pokemonWithTypesAndAbilities
+                _pokemonList.value = pokemonWithBasicData
             } catch (e: Exception) {
-                println("Error al obtener Pokémon: ${e.message}")
+                println("Error al obtener la lista de Pokémon: ${e.message}")
             }
         }
     }
 
     fun setSelectedPokemon(pokemon: MyPoke) {
-        _selectedPokemon.value = pokemon
+        // Mostrar un estado temporal mientras se cargan los datos
+        _selectedPokemon.value = pokemon.copy(
+            type = "Cargando...",
+            ability = "Cargando..."
+        )
+
+        viewModelScope.launch {
+            try {
+                // Obtener detalles del Pokémon directamente
+                val pokemonDetail = RetrofitInstance.api.getPokemonDetail(pokemon.name.lowercase())
+
+                // Extraer tipos
+                val types = pokemonDetail.types.map { it.type.name.replaceFirstChar(Char::uppercase) }
+
+                // Extraer habilidades
+                val abilities = pokemonDetail.abilities.map { it.ability.name.replaceFirstChar(Char::uppercase) }
+
+                // Actualizar el Pokémon seleccionado con datos reales
+                _selectedPokemon.value = pokemon.copy(
+                    type = types.joinToString(", "),
+                    ability = abilities.joinToString(", ")
+                )
+            } catch (e: Exception) {
+                println("Error al obtener detalles de ${pokemon.name}: ${e.message}")
+
+                // Si hay un error, mantener el Pokémon sin modificar pero mostrar un mensaje
+                _selectedPokemon.value = pokemon.copy(
+                    type = "Error al cargar",
+                    ability = "Error al cargar"
+                )
+            }
+        }
     }
 }
