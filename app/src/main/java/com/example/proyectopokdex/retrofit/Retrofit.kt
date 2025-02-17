@@ -16,6 +16,8 @@ interface PokeApiService {
     suspend fun getAllPokemon(): PokemonResponse
     @GET("pokemon/{name}/")
     suspend fun getPokemonDetail(@Path("name") name: String): PokemonDetailResponse
+    @GET("pokemon/{id}/encounters")
+    suspend fun getPokemonEncounters(@Path("id") id: String): List<LocationAreaEncounter>
 }
 
 object RetrofitInstance {
@@ -51,7 +53,8 @@ class PokemonViewModel : ViewModel() {
                         type = "Desconocido",
                         id = pokemon.getId(),
                         imageUrl = pokemon.getImageUrl(),
-                        ability = "Desconocido"
+                        ability = "Desconocido",
+                        encounter = "Desconocido"
                     )
                 }
                 _pokemonList.value = pokemonWithBasicData
@@ -62,35 +65,39 @@ class PokemonViewModel : ViewModel() {
     }
 
     fun setSelectedPokemon(pokemon: MyPoke) {
-        // Mostrar un estado temporal mientras se cargan los datos
         _selectedPokemon.value = pokemon.copy(
             type = "Cargando...",
-            ability = "Cargando..."
+            ability = "Cargando...",
+            encounter = "Cargando..."
         )
 
         viewModelScope.launch {
             try {
-                // Obtener detalles del Pokémon directamente
                 val pokemonDetail = RetrofitInstance.api.getPokemonDetail(pokemon.name.lowercase())
 
-                // Extraer tipos
                 val types = pokemonDetail.types.map { it.type.name.replaceFirstChar(Char::uppercase) }
-
-                // Extraer habilidades
                 val abilities = pokemonDetail.abilities.map { it.ability.name.replaceFirstChar(Char::uppercase) }
 
-                // Actualizar el Pokémon seleccionado con datos reales
+                val pokemonEncounters = RetrofitInstance.api.getPokemonEncounters(pokemon.id)
+
+                val encounters = if (pokemonEncounters.isNotEmpty()) {
+                    pokemonEncounters.joinToString("\n") { it.locationArea.name.replaceFirstChar(Char::uppercase) }
+                } else {
+                    "Sin encuentros disponibles"
+                }
+
                 _selectedPokemon.value = pokemon.copy(
                     type = types.joinToString(", "),
-                    ability = abilities.joinToString(", ")
+                    ability = abilities.joinToString(", "),
+                    encounter = encounters
                 )
             } catch (e: Exception) {
                 println("Error al obtener detalles de ${pokemon.name}: ${e.message}")
 
-                // Si hay un error, mantener el Pokémon sin modificar pero mostrar un mensaje
                 _selectedPokemon.value = pokemon.copy(
                     type = "Error al cargar",
-                    ability = "Error al cargar"
+                    ability = "Error al cargar",
+                    encounter = "Error al cargar"
                 )
             }
         }

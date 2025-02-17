@@ -9,6 +9,7 @@ import com.example.proyectopokdex.MyPoke
 import com.example.proyectopokdex.Screens.DataScreen
 import com.example.proyectopokdex.Screens.MainScreen
 import com.example.proyectopokdex.Screens.SplashScreen
+import com.example.proyectopokdex.Screens.EncountersScreen
 import com.example.proyectopokdex.retrofit.PokemonViewModel
 
 @Composable
@@ -28,6 +29,9 @@ fun AppNavigation() {
         }
         composable(AppScreens.DataScreen.route){
             DataScreen(navController, pokemonViewModel)
+        }
+        composable(AppScreens.EncountersScreen.route){
+            EncountersScreen(navController, pokemonViewModel)
         }
     }
 }

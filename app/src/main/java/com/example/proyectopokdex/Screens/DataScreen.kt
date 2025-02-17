@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -63,14 +64,18 @@ fun Structure(navController: NavController, viewModel: PokemonViewModel) {
 
         // Mostrar solo el Pokémon seleccionado
         selectedPoke?.let { poke ->
-            Stats(poke = poke)
+            Stats(viewModel, navController, poke = poke)
         }
     }
 }
 
 
 @Composable
-fun Stats(poke: MyPoke) {
+fun Stats(
+    viewModel: PokemonViewModel,
+    navController: NavController,
+    poke: MyPoke
+) {
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -106,6 +111,12 @@ fun Stats(poke: MyPoke) {
                 text = "Abilities: ${poke.ability}",
                 style = TextStyle(fontSize = 18.sp)
             )
+            Button(onClick = {
+                viewModel.setSelectedPokemon(poke) // Establecer el Pokémon seleccionado
+                navController.navigate(AppScreens.EncountersScreen.route)
+            }){
+                Text(text = "Encounters")
+            }
         }
     }
 }

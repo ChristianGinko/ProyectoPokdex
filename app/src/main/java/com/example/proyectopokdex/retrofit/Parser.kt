@@ -20,7 +20,7 @@ data class PokemonDetailResponse(
     val name: String,
     val sprites: PokemonSprites,
     val types: List<TypeSlot>,
-    val abilities: List<AbilitySlot>
+    val abilities: List<AbilitySlot>,
 )
 
 // Para extraer la imagen del Pokémon
@@ -50,9 +50,22 @@ data class Ability(
     val url: String
 )
 
+// ✅ Corrección: La API ya devuelve una lista de LocationAreaEncounter directamente
+data class LocationAreaEncounter(
+    @SerializedName("location_area") val locationArea: NamedAPIResource
+)
+
+data class NamedAPIResource(
+    @SerializedName("name") val name: String
+)
+
 // Función para obtener el ID del Pokémon desde su URL
 fun Pokemon.getId(): String {
-    return url.split("/").filter { it.isNotEmpty() }.last()
+    return try {
+        url.split("/").filter { it.isNotEmpty() }.last()
+    } catch (e: Exception) {
+        "0" // Devuelve "0" si hay un error
+    }
 }
 
 // Función para obtener la imagen del Pokémon desde su ID
