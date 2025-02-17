@@ -109,12 +109,17 @@ fun Stats(
         Row(){
             Text(
                 text = "Abilities: ${poke.ability}",
-                style = TextStyle(fontSize = 18.sp)
+                style = TextStyle(fontSize = 18.sp),
+                modifier = Modifier
+                    .weight(1f)
             )
             Button(onClick = {
                 viewModel.setSelectedPokemon(poke) // Establecer el Pokémon seleccionado
                 navController.navigate(AppScreens.EncountersScreen.route)
-            }){
+            },
+                modifier = Modifier
+                    .weight(1f)
+            ){
                 Text(text = "Encounters")
             }
         }
