@@ -90,7 +90,7 @@ fun Stats(
         ) {
             Column(
                 modifier = Modifier
-                    .offset(x = (-30).dp)
+                    .weight(1f)
             ) {
                 Text(
                     text = "Name: ${poke.name}",
@@ -103,7 +103,9 @@ fun Stats(
             }
             AsyncImage(
                 model = poke.imageUrl,
-                contentDescription = "Imagen de ${poke.name}"
+                contentDescription = "Imagen de ${poke.name}",
+                modifier = Modifier
+                    .weight(1f)
             )
         }
         Row(){
