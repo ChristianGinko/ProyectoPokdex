@@ -23,82 +23,73 @@ fun LeagueScreen (navController: NavController, viewModel: PokemonViewModel){
 }
 
 @Composable
-fun Structures (navController: NavController, viewModel: PokemonViewModel) {
+fun Structures(navController: NavController, viewModel: PokemonViewModel) {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-    ){
+        modifier = Modifier.fillMaxSize()
+    ) {
         Image(
             painter = painterResource(R.drawable.ligas_pokemon),
             contentDescription = null,
             contentScale = ContentScale.FillHeight,
-            modifier = Modifier
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         )
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxSize()
-        ){
+            modifier = Modifier.fillMaxSize()
+        ) {
             Button(onClick = {
+                viewModel.setGeneration("1") // Kanto
                 navController.navigate(AppScreens.MainScreen.route)
-            },
-            ){
+            }) {
                 Text(text = "Kanto")
             }
             Button(onClick = {
+                viewModel.setGeneration("2") // Johto
                 navController.navigate(AppScreens.MainScreen.route)
-            },
-            ){
+            }) {
                 Text(text = "Johto")
             }
             Button(onClick = {
+                viewModel.setGeneration("3") // Hoenn
                 navController.navigate(AppScreens.MainScreen.route)
-            },
-            ){
+            }) {
                 Text(text = "Hoenn")
             }
             Button(onClick = {
+                viewModel.setGeneration("4") // Sinnoh
                 navController.navigate(AppScreens.MainScreen.route)
-            },
-            ){
+            }) {
                 Text(text = "Sinnoh")
             }
             Button(onClick = {
+                viewModel.setGeneration("5") // Unova
                 navController.navigate(AppScreens.MainScreen.route)
-            },
-            ){
+            }) {
                 Text(text = "Unova")
             }
             Button(onClick = {
+                viewModel.setGeneration("6") // Kalos
                 navController.navigate(AppScreens.MainScreen.route)
-            },
-            ){
+            }) {
                 Text(text = "Kalos")
             }
             Button(onClick = {
+                viewModel.setGeneration("7") // Alola
                 navController.navigate(AppScreens.MainScreen.route)
-            },
-            ){
+            }) {
                 Text(text = "Alola")
             }
             Button(onClick = {
+                viewModel.setGeneration("8") // Galar
                 navController.navigate(AppScreens.MainScreen.route)
-            },
-            ){
+            }) {
                 Text(text = "Galar")
             }
             Button(onClick = {
+                viewModel.setGeneration("9") // Paldea
                 navController.navigate(AppScreens.MainScreen.route)
-            },
-            ){
-                Text(text = "Hisui")
-            }
-            Button(onClick = {
-                navController.navigate(AppScreens.MainScreen.route)
-            },
-            ){
+            }) {
                 Text(text = "Paldea")
             }
         }

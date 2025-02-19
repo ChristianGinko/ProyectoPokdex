@@ -2,14 +2,15 @@ package com.example.proyectopokdex.retrofit
 
 import com.google.gson.annotations.SerializedName
 
-// Respuesta de la API cuando obtenemos la lista de Pokémon
-data class PokemonResponse(
-    val count: Int,
-    val results: List<Pokemon>
+// Respuesta de la API cuando obtenemos la lista de Pokémon de la Generación 1
+data class GenerationResponse(
+    val id: Int,
+    val name: String,
+    @SerializedName("pokemon_species") val pokemonSpecies: List<PokemonSpecies>
 )
 
-// Representación básica de un Pokémon en la lista
-data class Pokemon(
+// Representación de un Pokémon en la lista de la Generación 1
+data class PokemonSpecies(
     val name: String,
     val url: String
 )
@@ -60,7 +61,7 @@ data class NamedAPIResource(
 )
 
 // Función para obtener el ID del Pokémon desde su URL
-fun Pokemon.getId(): String {
+fun PokemonSpecies.getId(): String {
     return try {
         url.split("/").filter { it.isNotEmpty() }.last()
     } catch (e: Exception) {
@@ -69,7 +70,7 @@ fun Pokemon.getId(): String {
 }
 
 // Función para obtener la imagen del Pokémon desde su ID
-fun Pokemon.getImageUrl(): String {
+fun PokemonSpecies.getImageUrl(): String {
     val id = this.getId()
     return "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/$id.png"
 }
