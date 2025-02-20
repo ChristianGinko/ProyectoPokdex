@@ -55,7 +55,6 @@ fun Structure(navController: NavController, viewModel: PokemonViewModel) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .clickable { navController.navigate(AppScreens.MainScreen.route) }
             .padding (
                 top = 30.dp,
                 bottom = 50.dp

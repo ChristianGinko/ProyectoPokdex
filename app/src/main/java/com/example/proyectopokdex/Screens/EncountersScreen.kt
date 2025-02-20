@@ -5,8 +5,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -15,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -26,7 +29,6 @@ import com.example.proyectopokdex.retrofit.PokemonViewModel
 
 @Composable
 fun EncountersScreen (navController: NavController, viewModel: PokemonViewModel){
-    val pokes by viewModel.pokemonList
     Encounters(navController, viewModel)
 }
 
@@ -37,7 +39,7 @@ fun Encounters(navController: NavController, viewModel: PokemonViewModel) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .clickable { navController.navigate(AppScreens.MainScreen.route) }
+            .clickable { navController.navigate(AppScreens.DataScreen.route) }
             .padding (
                 top = 30.dp,
                 bottom = 50.dp
@@ -49,16 +51,26 @@ fun Encounters(navController: NavController, viewModel: PokemonViewModel) {
             contentScale = ContentScale.FillHeight,
             modifier = Modifier.fillMaxSize()
         )
-
-        // Mostrar solo el Pokémon seleccionado
-        selectedPoke?.let { poke ->
-            Place(poke = poke)
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            // Mostrar solo el Pokémon seleccionado
+            selectedPoke?.let { poke ->
+                Place(
+                    poke = poke,
+                    modifier = Modifier
+                        .fillMaxSize()
+                )
+            }
         }
     }
 }
 
 @Composable
-fun Place(poke: MyPoke) {
+fun Place(poke: MyPoke, modifier: Modifier = Modifier) {
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
