@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -65,10 +67,20 @@ fun Structure(navController: NavController, viewModel: PokemonViewModel) {
             contentScale = ContentScale.FillHeight,
             modifier = Modifier.fillMaxSize()
         )
-
-        // Mostrar solo el Pokémon seleccionado
-        selectedPoke?.let { poke ->
-            Stats(viewModel, navController, poke = poke)
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            // Mostrar solo el Pokémon seleccionado
+            selectedPoke?.let { poke ->
+                Stats(viewModel, navController, poke = poke)
+            }
+            Button(
+                onClick = {navController.navigate(AppScreens.MainScreen.route)}
+            ){
+                Text(text = "Back")
+            }
         }
     }
 }
@@ -84,7 +96,8 @@ fun Stats(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxHeight(0.9f)
+            .fillMaxWidth()
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
