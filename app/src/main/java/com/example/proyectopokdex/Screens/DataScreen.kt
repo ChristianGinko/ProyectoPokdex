@@ -54,6 +54,10 @@ fun Structure(navController: NavController, viewModel: PokemonViewModel) {
         modifier = Modifier
             .fillMaxSize()
             .clickable { navController.navigate(AppScreens.MainScreen.route) }
+            .padding (
+                top = 30.dp,
+                bottom = 50.dp
+            )
     ) {
         Image(
             painter = painterResource(R.drawable.pokedex_stats),
