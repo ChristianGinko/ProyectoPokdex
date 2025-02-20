@@ -7,12 +7,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -39,7 +42,38 @@ import com.example.proyectopokdex.retrofit.PokemonViewModel
 @Composable
 fun MainScreen(navController: NavController, viewModel: PokemonViewModel) {
     val pokes by viewModel.pokemonList
-    MyPokes(navController, viewModel, pokes)
+    Column(
+        verticalArrangement = Arrangement.spacedBy(10.dp), // Espaciado entre los elementos
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 30.dp, bottom = 50.dp)
+    ) {
+        // MyPokes ahora ocupa el 90% de la altura disponible
+        MyPokes(
+            navController,
+            viewModel,
+            pokes,
+            modifier = Modifier
+                .fillMaxHeight(0.9f) // Ajusta la altura ocupada por la lista
+        )
+
+        // Row con el botón
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Button(
+                onClick = {
+                    navController.navigate(AppScreens.LeagueScreen.route)
+                }
+            ) {
+                Text(text = "Back")
+            }
+        }
+    }
 }
 
 @Composable
@@ -92,9 +126,9 @@ fun MyText(poke: MyPoke) {
 }
 
 @Composable
-fun MyPokes(navController: NavController, viewModel: PokemonViewModel, pokes: List<MyPoke>) {
+fun MyPokes(navController: NavController, viewModel: PokemonViewModel, pokes: List<MyPoke>, modifier: Modifier = Modifier) {
     LazyColumn(
-        modifier = Modifier.padding(top = 30.dp, bottom = 50.dp)
+        modifier = modifier // Usamos el modificador pasado para controlar la altura
     ) {
         items(pokes) { poke ->
             MyComponent(poke = poke, viewModel = viewModel, navController = navController)
