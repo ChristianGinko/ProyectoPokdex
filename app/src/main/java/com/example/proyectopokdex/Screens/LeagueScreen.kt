@@ -12,10 +12,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.proyectopokdex.R
 import com.example.proyectopokdex.navigation.AppScreens
 import com.example.proyectopokdex.retrofit.PokemonViewModel
+import androidx.compose.foundation.layout.padding
 
 @Composable
 fun LeagueScreen (navController: NavController, viewModel: PokemonViewModel){
@@ -25,7 +27,12 @@ fun LeagueScreen (navController: NavController, viewModel: PokemonViewModel){
 @Composable
 fun Structures(navController: NavController, viewModel: PokemonViewModel) {
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .padding (
+                top = 30.dp,
+                bottom = 50.dp
+            )
     ) {
         Image(
             painter = painterResource(R.drawable.ligas_pokemon),
