@@ -6,12 +6,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -64,10 +67,21 @@ fun Structure(navController: NavController, viewModel: PokemonViewModel) {
             contentScale = ContentScale.FillHeight,
             modifier = Modifier.fillMaxSize()
         )
-
-        // Mostrar solo el Pokémon seleccionado
-        selectedPoke?.let { poke ->
-            Stats(poke = poke)
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Mostrar solo el Pokémon seleccionado
+            selectedPoke?.let { poke ->
+                Stats(poke = poke)
+            }
+            Button(
+                onClick = { navController.navigate(AppScreens.MainScreen.route) },
+                modifier = Modifier
+                    .offset(y = (-200).dp)
+            ){
+                Text(text = "Back")
+            }
         }
     }
 }
@@ -79,7 +93,8 @@ fun Stats(poke: MyPoke) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
+            .fillMaxHeight(0.9f)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
