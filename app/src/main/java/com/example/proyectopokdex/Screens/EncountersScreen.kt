@@ -12,6 +12,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -65,10 +67,21 @@ fun Place(poke: MyPoke) {
         modifier = Modifier
             .fillMaxSize()
     ){
-        Text(
-            text = "Places:\n${poke.encounter}",
-            style = TextStyle(fontSize = 25.sp)
-        )
+        Box() {
+            Text(
+                text = "Places: \n${poke.encounter}",
+                style = TextStyle(
+                    fontSize = 25.sp,
+                    drawStyle = Stroke(width = 15f)
+                ),
+                color = Color.Black
+            )
+            Text(
+                text = "Places:\n${poke.encounter}",
+                style = TextStyle(fontSize = 25.sp),
+                color = Color.White
+            )
+        }
     }
 }
 
