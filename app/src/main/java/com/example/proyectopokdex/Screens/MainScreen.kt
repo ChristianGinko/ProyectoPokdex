@@ -32,6 +32,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.State
+import androidx.compose.ui.graphics.drawscope.Stroke
 import com.example.proyectopokdex.retrofit.RetrofitInstance
 import com.example.proyectopokdex.retrofit.getId
 import com.example.proyectopokdex.MyPoke
@@ -96,31 +97,37 @@ fun MyComponent(
             contentDescription = null,
             modifier = Modifier.fillMaxSize()
         )
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.offset(y = 50.dp)
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .fillMaxSize()
+                .offset(y = 50.dp)
         ) {
             Text(
                 text = "#${poke.id}",
                 color = Color(0xFFFFE031),
-                style = TextStyle(fontSize = 35.sp),
-                modifier = Modifier.offset(x = 50.dp)
+                style = TextStyle(
+                    fontSize = 35.sp
+                ),
+                modifier = Modifier
             )
-            MyText(poke)
+            MyText(
+                poke,
+                modifier = Modifier
+            )
         }
     }
 }
 
 @Composable
-fun MyText(poke: MyPoke) {
+fun MyText(poke: MyPoke, modifier: Modifier = Modifier) {
     Column(modifier = Modifier.padding(10.dp)) {
         Text(
             text = poke.name,
             color = Color(0xFFFFE031),
             style = TextStyle(fontSize = 35.sp),
             modifier = Modifier
-                .offset(x = 70.dp)
         )
     }
 }

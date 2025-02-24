@@ -97,6 +97,7 @@ fun Stats(
         modifier = Modifier
             .fillMaxHeight(0.9f)
             .fillMaxWidth()
+            .padding(16.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
