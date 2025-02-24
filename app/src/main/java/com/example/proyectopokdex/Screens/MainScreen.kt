@@ -104,14 +104,24 @@ fun MyComponent(
                 .fillMaxSize()
                 .offset(y = 50.dp)
         ) {
-            Text(
-                text = "#${poke.id}",
-                color = Color(0xFFFFE031),
-                style = TextStyle(
-                    fontSize = 35.sp
-                ),
-                modifier = Modifier
-            )
+            Box() {
+                Text(
+                    text = "#${poke.id}",
+                    color = Color(0xFF4052D9),
+                    style = TextStyle(
+                        fontSize = 35.sp,
+                        drawStyle = Stroke(width = 15f)
+                    )
+                )
+                Text(
+                    text = "#${poke.id}",
+                    color = Color(0xFFFFE031),
+                    style = TextStyle(
+                        fontSize = 35.sp
+                    ),
+                    modifier = Modifier
+                )
+            }
             MyText(
                 poke,
                 modifier = Modifier
@@ -123,12 +133,23 @@ fun MyComponent(
 @Composable
 fun MyText(poke: MyPoke, modifier: Modifier = Modifier) {
     Column(modifier = Modifier.padding(10.dp)) {
-        Text(
-            text = poke.name,
-            color = Color(0xFFFFE031),
-            style = TextStyle(fontSize = 35.sp),
-            modifier = Modifier
-        )
+        Box() {
+            Text(
+                text = poke.name,
+                color = Color(0xFF4052D9),
+                style = TextStyle(
+                    fontSize = 35.sp,
+                    drawStyle = Stroke(width = 15f)
+                ),
+                modifier = Modifier
+            )
+            Text(
+                text = poke.name,
+                color = Color(0xFFFFE031),
+                style = TextStyle(fontSize = 35.sp),
+                modifier = Modifier
+            )
+        }
     }
 }
 
