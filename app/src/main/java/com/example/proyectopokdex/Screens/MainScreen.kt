@@ -98,15 +98,15 @@ fun MyComponent(
             modifier = Modifier.fillMaxSize()
         )
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
+            horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Center,
             modifier = Modifier
                 .fillMaxSize()
-                .offset(y = 50.dp)
+                .offset(x = 50.dp, y = 90.dp)
         ) {
             Box() {
                 Text(
-                    text = "#${poke.id}",
+                    text = "#${poke.id} ${poke.name}",
                     color = Color(0xFF4052D9),
                     style = TextStyle(
                         fontSize = 35.sp,
@@ -114,7 +114,7 @@ fun MyComponent(
                     )
                 )
                 Text(
-                    text = "#${poke.id}",
+                    text = "#${poke.id} ${poke.name}",
                     color = Color(0xFFFFE031),
                     style = TextStyle(
                         fontSize = 35.sp
@@ -122,14 +122,11 @@ fun MyComponent(
                     modifier = Modifier
                 )
             }
-            MyText(
-                poke,
-                modifier = Modifier
-            )
         }
     }
 }
 
+/*
 @Composable
 fun MyText(poke: MyPoke, modifier: Modifier = Modifier) {
     Column(modifier = Modifier.padding(10.dp)) {
@@ -152,6 +149,7 @@ fun MyText(poke: MyPoke, modifier: Modifier = Modifier) {
         }
     }
 }
+*/
 
 @Composable
 fun MyPokes(navController: NavController, viewModel: PokemonViewModel, pokes: List<MyPoke>, modifier: Modifier = Modifier) {
