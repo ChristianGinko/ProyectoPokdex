@@ -57,7 +57,7 @@ fun Encounters(navController: NavController, viewModel: PokemonViewModel) {
         )
         val scrollState = rememberScrollState()
         Column(
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .padding(10.dp)
@@ -80,7 +80,7 @@ fun Encounters(navController: NavController, viewModel: PokemonViewModel) {
 fun Place(poke: MyPoke, modifier: Modifier = Modifier) {
     Column(
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.Start,
         modifier = Modifier
             .fillMaxSize()
     ){
@@ -88,14 +88,16 @@ fun Place(poke: MyPoke, modifier: Modifier = Modifier) {
             Text(
                 text = "Places: \n${poke.encounter}",
                 style = TextStyle(
-                    fontSize = 25.sp,
+                    fontSize = 23.sp,
                     drawStyle = Stroke(width = 15f)
                 ),
                 color = Color.Black
             )
             Text(
                 text = "Places:\n${poke.encounter}",
-                style = TextStyle(fontSize = 25.sp),
+                style = TextStyle(
+                    fontSize = 23.sp
+                ),
                 color = Color.White
             )
         }
