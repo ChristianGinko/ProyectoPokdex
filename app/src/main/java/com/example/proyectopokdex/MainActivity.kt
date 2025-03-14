@@ -12,8 +12,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import com.example.proyectopokdex.Database.OfflinePokesRepository
+import com.example.proyectopokdex.Database.PokemonDatabase
+import com.example.proyectopokdex.Database.PokemonViewModelFactory
 import com.example.proyectopokdex.navigation.AppNavigation
+import com.example.proyectopokdex.retrofit.PokemonViewModel
 import com.example.proyectopokdex.ui.theme.ProyectoPokédexTheme
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

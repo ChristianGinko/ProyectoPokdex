@@ -4,6 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.proyectopokdex.Database.PokesRepository
 import com.example.proyectopokdex.MyPoke
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
@@ -32,7 +33,7 @@ object RetrofitInstance {
     }
 }
 
-class PokemonViewModel : ViewModel() {
+class PokemonViewModel (private val pokesRepository: PokesRepository) : ViewModel() {
     private val _pokemonList = mutableStateOf<List<MyPoke>>(emptyList())
     val pokemonList: State<List<MyPoke>> = _pokemonList
 
