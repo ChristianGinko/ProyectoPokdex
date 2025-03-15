@@ -9,7 +9,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.proyectopokdex.Database.OfflinePokesRepository
 import com.example.proyectopokdex.Database.PokemonDatabase
 import com.example.proyectopokdex.Database.PokemonViewModelFactory
-import com.example.proyectopokdex.MyPoke
 import com.example.proyectopokdex.Screens.DataScreen
 import com.example.proyectopokdex.Screens.MainScreen
 import com.example.proyectopokdex.Screens.SplashScreen

@@ -7,19 +7,16 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,15 +25,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.launch
-import androidx.compose.runtime.State
 import androidx.compose.ui.graphics.drawscope.Stroke
-import com.example.proyectopokdex.retrofit.RetrofitInstance
-import com.example.proyectopokdex.retrofit.getId
-import com.example.proyectopokdex.MyPoke
 import com.example.proyectopokdex.R
+import com.example.proyectopokdex.entities.MyPoke
 import com.example.proyectopokdex.navigation.AppScreens
 import com.example.proyectopokdex.retrofit.PokemonViewModel
 
@@ -156,8 +147,8 @@ fun MyPokes(navController: NavController, viewModel: PokemonViewModel, pokes: Li
     LazyColumn(
         modifier = modifier // Usamos el modificador pasado para controlar la altura
     ) {
-        items(pokes) { poke ->
-            MyComponent(poke = poke, viewModel = viewModel, navController = navController)
+        items(pokes.size) { index ->
+            MyComponent(poke = pokes.get(index), viewModel = viewModel, navController = navController)
         }
     }
 }
