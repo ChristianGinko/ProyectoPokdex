@@ -23,6 +23,8 @@ interface PokeApiService {
     suspend fun getPokemonDetail(@Path("name") name: String): PokemonDetailResponse
     @GET("pokemon/{id}/encounters")
     suspend fun getPokemonEncounters(@Path("id") id: String): List<LocationAreaEncounter>
+    @GET("type/{id}/")
+    suspend fun getTypeById(@Path("id") id: String): TypeResponse
 }
 
 object RetrofitInstance {

@@ -15,6 +15,17 @@ data class PokemonSpecies(
     val url: String
 )
 
+data class TypeResponse(
+    val id: Int,
+    val name: String,
+    @SerializedName("pokeTypes") val PokeTypes: List<PokeTypes>
+)
+
+data class PokeTypes(
+    val name: String,
+    val url: String
+)
+
 // Respuesta cuando pedimos detalles de un Pokémon específico
 data class PokemonDetailResponse(
     val id: Int,
