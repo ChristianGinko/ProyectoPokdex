@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,6 +35,9 @@ import com.example.proyectopokdex.retrofit.PokemonViewModel
 @Composable
 fun MainScreen(navController: NavController, viewModel: PokemonViewModel) {
     val pokes by viewModel.pokemonList
+    LaunchedEffect(Unit) {
+        viewModel.setGeneration("1")
+    }
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp), // Espaciado entre los elementos
         horizontalAlignment = Alignment.CenterHorizontally,

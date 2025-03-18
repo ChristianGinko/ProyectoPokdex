@@ -57,12 +57,16 @@ class PokemonViewModel (private val pokesRepository: PokesRepository) : ViewMode
     }
 
     private fun fetchPokemon() {
+        println("fetchPokemon ejecutado")
         viewModelScope.launch {
             try {
                 val generationPokesDb = pokesRepository.getAllPokesGenerationStream(generationId)
+                println("Consulta ejecutada: $generationPokesDb")
 
                 generationPokesDb.collect { pokes ->
+                    println("Pokémon en la BD local: ${pokes.size}") // Muestra cuántos hay en la BD
                     if (pokes.isEmpty()) {
+                        println("No hay Pokémon en la BD, se intentará obtener de la API...")
                         // Usamos el ID de generación seleccionado dinámicamente
                         val generationResponse = withContext(Dispatchers.IO) {
                             RetrofitInstance.api.getGenerationById(generationId)
@@ -90,8 +94,10 @@ class PokemonViewModel (private val pokesRepository: PokesRepository) : ViewMode
 
                         _pokemonList.value = sortedPokemonList
                     } else {
+                        println("Pokémon en la BD: ${pokes}")
                         _pokemonList.value = pokes
                     }
+                    println("Lista actualizada: ${_pokemonList.value}")
                 }
 
             } catch (e: Exception) {
