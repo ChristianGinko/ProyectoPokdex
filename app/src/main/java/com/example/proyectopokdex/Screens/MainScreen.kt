@@ -35,9 +35,6 @@ import com.example.proyectopokdex.retrofit.PokemonViewModel
 @Composable
 fun MainScreen(navController: NavController, viewModel: PokemonViewModel) {
     val pokes by viewModel.pokemonList
-    LaunchedEffect(Unit) {
-        viewModel.setGeneration("1")
-    }
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp), // Espaciado entre los elementos
         horizontalAlignment = Alignment.CenterHorizontally,
