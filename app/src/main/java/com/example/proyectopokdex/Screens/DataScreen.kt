@@ -100,7 +100,7 @@ fun Stats(
                     style = TextStyle(fontSize = 25.sp)
                 )
                 Text(
-                    text = "Type: ${poke.type}",
+                    text = "Type: ${poke.type.joinToString(", ") { it.name }}",
                     style = TextStyle(fontSize = 18.sp)
                 )
             }

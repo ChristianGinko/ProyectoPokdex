@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.proyectopokdex.Database.PokesRepository
 import com.example.proyectopokdex.entities.MyPoke
+import com.example.proyectopokdex.entities.MyType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -73,17 +74,18 @@ class PokemonViewModel (private val pokesRepository: PokesRepository) : ViewMode
                         val pokemonWithBasicData = generationResponse.pokemonSpecies.map { pokemon ->
                             MyPoke(
                                 name = pokemon.name.replaceFirstChar(Char::uppercase),
-                                type = "Desconocido", // Se actualizará más tarde
+                                type = emptyList(), // ✅ Ahora es una lista vacía
                                 id = pokemon.getId().toInt(),
                                 imageUrl = pokemon.getImageUrl(),
-                                ability = "Desconocido", // Se actualizará más tarde
-                                encounter = "Desconocido", // Se actualizará más tarde
+                                ability = "Desconocido",
+                                encounter = "Desconocido",
                                 generationId = generationId
                             )
                         }
 
                         // Ordenar los Pokémon por ID (suponiendo que el ID se obtiene correctamente)
-                        val sortedPokemonList = pokemonWithBasicData.sortedBy { it.id.toInt() } // Ordena por ID numérico
+                        val sortedPokemonList =
+                            pokemonWithBasicData.sortedBy { it.id.toInt() } // Ordena por ID numérico
 
                         pokesRepository.insertAllPoke(sortedPokemonList)
 //                        for(poke in sortedPokemonList){
@@ -104,7 +106,7 @@ class PokemonViewModel (private val pokesRepository: PokesRepository) : ViewMode
 
     fun setSelectedPokemon(pokemon: MyPoke) {
         _selectedPokemon.value = pokemon.copy(
-            type = "Cargando...",
+            type = emptyList(), // ✅ Inicializamos con una lista vacía
             ability = "Cargando...",
             encounter = "Cargando..."
         )
@@ -112,10 +114,18 @@ class PokemonViewModel (private val pokesRepository: PokesRepository) : ViewMode
         viewModelScope.launch {
             try {
                 val pokemonDetail = RetrofitInstance.api.getPokemonDetail(pokemon.name.lowercase())
-                val types = pokemonDetail.types.map { it.type.name.replaceFirstChar(Char::uppercase) }
-                val abilities = pokemonDetail.abilities.map { it.ability.name.replaceFirstChar(Char::uppercase) }
-                val pokemonEncounters = RetrofitInstance.api.getPokemonEncounters(pokemon.id.toString())
 
+                // Obtener la lista de tipos desde la API
+                val typeList = pokemonDetail.types.map { typeInfo ->
+                    withContext(Dispatchers.IO) {
+                        val typeResponse = RetrofitInstance.api.getTypeById(typeInfo.type.name.lowercase())
+                        MyType(id = typeResponse.id, name = typeResponse.name.replaceFirstChar(Char::uppercase))
+                    }
+                }
+
+                val abilities = pokemonDetail.abilities.map { it.ability.name.replaceFirstChar(Char::uppercase) }
+
+                val pokemonEncounters = RetrofitInstance.api.getPokemonEncounters(pokemon.id.toString())
                 val encounters = if (pokemonEncounters.isNotEmpty()) {
                     pokemonEncounters.joinToString("\n") { it.locationArea.name.replaceFirstChar(Char::uppercase) }
                 } else {
@@ -123,7 +133,7 @@ class PokemonViewModel (private val pokesRepository: PokesRepository) : ViewMode
                 }
 
                 _selectedPokemon.value = pokemon.copy(
-                    type = types.joinToString(", "),
+                    type = typeList, // ✅ Se guarda la lista completa en Room
                     ability = abilities.joinToString(", "),
                     encounter = encounters
                 )
@@ -131,7 +141,7 @@ class PokemonViewModel (private val pokesRepository: PokesRepository) : ViewMode
                 println("Error al obtener detalles de ${pokemon.name}: ${e.message}")
 
                 _selectedPokemon.value = pokemon.copy(
-                    type = "Error al cargar",
+                    type = emptyList(),
                     ability = "Error al cargar",
                     encounter = "Error al cargar"
                 )

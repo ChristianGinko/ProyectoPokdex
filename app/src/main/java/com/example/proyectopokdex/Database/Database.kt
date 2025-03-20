@@ -4,9 +4,12 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import com.example.proyectopokdex.entities.Converters
 import com.example.proyectopokdex.entities.MyPoke
 
-@Database(entities = [MyPoke::class], version = 2, exportSchema = false)
+@Database(entities = [MyPoke::class], version = 3, exportSchema = false)
+@TypeConverters(Converters::class) // Agregar esto para que Room use los conversores
 abstract class PokemonDatabase : RoomDatabase() {
     abstract fun pokemonDao(): PokemonDao
 
