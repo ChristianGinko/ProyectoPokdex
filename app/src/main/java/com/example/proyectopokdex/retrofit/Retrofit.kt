@@ -106,40 +106,59 @@ class PokemonViewModel (private val pokesRepository: PokesRepository) : ViewMode
 
     fun setSelectedPokemon(pokemon: MyPoke) {
         _selectedPokemon.value = pokemon.copy(
-            type = emptyList(), // ✅ Inicializamos con una lista vacía
+            type = emptyList(),
             ability = "Cargando...",
             encounter = "Cargando..."
         )
 
         viewModelScope.launch {
             try {
-                val pokemonDetail = RetrofitInstance.api.getPokemonDetail(pokemon.name.lowercase())
+                // 🔹 Buscar en Room primero
+                pokesRepository.getPokeStream(pokemon.id.toString()).collect { pokemonFromDb ->
+                    if (pokemonFromDb != null && pokemonFromDb.type.isNotEmpty()) {
+                        // 🔹 Si hay datos en Room, usarlos y evitar la API
+                        _selectedPokemon.value = pokemonFromDb
+                    } else {
+                        // 🔹 Si no hay datos, llamar a la API
+                        val pokemonDetail = withContext(Dispatchers.IO) {
+                            RetrofitInstance.api.getPokemonDetail(pokemon.name.lowercase())
+                        }
 
-                // Obtener la lista de tipos desde la API
-                val typeList = pokemonDetail.types.map { typeInfo ->
-                    withContext(Dispatchers.IO) {
-                        val typeResponse = RetrofitInstance.api.getTypeById(typeInfo.type.name.lowercase())
-                        MyType(id = typeResponse.id, name = typeResponse.name.replaceFirstChar(Char::uppercase))
+                        // 🔹 Obtener la lista de tipos desde la API
+                        val typeList = pokemonDetail.types.map { typeInfo ->
+                            withContext(Dispatchers.IO) {
+                                val typeResponse = RetrofitInstance.api.getTypeById(typeInfo.type.name.lowercase())
+                                MyType(id = typeResponse.id, name = typeResponse.name.replaceFirstChar(Char::uppercase))
+                            }
+                        }
+
+                        val abilities = pokemonDetail.abilities.map { it.ability.name.replaceFirstChar(Char::uppercase) }
+
+                        val pokemonEncounters = withContext(Dispatchers.IO) {
+                            RetrofitInstance.api.getPokemonEncounters(pokemon.id.toString())
+                        }
+                        val encounters = if (pokemonEncounters.isNotEmpty()) {
+                            pokemonEncounters.joinToString("\n") { it.locationArea.name.replaceFirstChar(Char::uppercase) }
+                        } else {
+                            "Sin encuentros disponibles"
+                        }
+
+                        // 🔹 Crear un objeto actualizado con los nuevos datos
+                        val updatedPokemon = pokemon.copy(
+                            type = typeList,
+                            ability = abilities.joinToString(", "),
+                            encounter = encounters
+                        )
+
+                        // 🔹 Guardar en Room
+                        pokesRepository.updatePoke(updatedPokemon)
+
+                        // 🔹 Actualizar la UI con los datos obtenidos
+                        _selectedPokemon.value = updatedPokemon
                     }
                 }
-
-                val abilities = pokemonDetail.abilities.map { it.ability.name.replaceFirstChar(Char::uppercase) }
-
-                val pokemonEncounters = RetrofitInstance.api.getPokemonEncounters(pokemon.id.toString())
-                val encounters = if (pokemonEncounters.isNotEmpty()) {
-                    pokemonEncounters.joinToString("\n") { it.locationArea.name.replaceFirstChar(Char::uppercase) }
-                } else {
-                    "Sin encuentros disponibles"
-                }
-
-                _selectedPokemon.value = pokemon.copy(
-                    type = typeList, // ✅ Se guarda la lista completa en Room
-                    ability = abilities.joinToString(", "),
-                    encounter = encounters
-                )
             } catch (e: Exception) {
                 println("Error al obtener detalles de ${pokemon.name}: ${e.message}")
-
                 _selectedPokemon.value = pokemon.copy(
                     type = emptyList(),
                     ability = "Error al cargar",
