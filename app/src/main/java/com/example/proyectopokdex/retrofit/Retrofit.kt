@@ -40,23 +40,18 @@ object RetrofitInstance {
     }
 }
 
-class PokemonViewModel (private val pokesRepository: PokesRepository) : ViewModel() {
+class PokemonViewModel(private val pokesRepository: PokesRepository) : ViewModel() {
     private val _pokemonList = mutableStateOf<List<MyPoke>>(emptyList())
     val pokemonList: State<List<MyPoke>> = _pokemonList
 
     private val _selectedPokemon = mutableStateOf<MyPoke?>(null)
     val selectedPokemon: State<MyPoke?> = _selectedPokemon
 
-    private var generationId: String = "1" // Por defecto, usamos la generación 1 (Kanto)
+    private var generationId: String = "1" // Por defecto, generación 1 (Kanto)
 
-    init {
-//        fetchPokemon()
-    }
-
-    // Función para cambiar la generación seleccionada
     fun setGeneration(generationId: String) {
         this.generationId = generationId
-        fetchPokemon() // Llamar nuevamente a la API con la nueva generación
+        fetchPokemon()
     }
 
     private fun fetchPokemon() {
@@ -66,40 +61,32 @@ class PokemonViewModel (private val pokesRepository: PokesRepository) : ViewMode
 
                 generationPokesDb.collect { pokes ->
                     if (pokes.isEmpty()) {
-                        // Usamos el ID de generación seleccionado dinámicamente
                         val generationResponse = withContext(Dispatchers.IO) {
                             RetrofitInstance.api.getGenerationById(generationId)
                         }
-                        // Mapear los Pokémon a la estructura MyPoke
+
                         val pokemonWithBasicData = generationResponse.pokemonSpecies.map { pokemon ->
                             MyPoke(
                                 name = pokemon.name.replaceFirstChar(Char::uppercase),
-                                type = emptyList(), // ✅ Ahora es una lista vacía
+                                type = emptyList(),
                                 id = pokemon.getId().toInt(),
-                                imageUrl = pokemon.getImageUrl(),
+                                imageUrl = pokemon.getImageUrl(), // ✅ Ya incluye la URL de la imagen
                                 ability = "Desconocido",
                                 encounter = "Desconocido",
                                 generationId = generationId
                             )
                         }
 
-                        // Ordenar los Pokémon por ID (suponiendo que el ID se obtiene correctamente)
-                        val sortedPokemonList =
-                            pokemonWithBasicData.sortedBy { it.id.toInt() } // Ordena por ID numérico
+                        val sortedPokemonList = pokemonWithBasicData.sortedBy { it.id }
 
                         pokesRepository.insertAllPoke(sortedPokemonList)
-//                        for(poke in sortedPokemonList){
-//                            pokesRepository.insertPoke(poke)
-//                        }
-
                         _pokemonList.value = sortedPokemonList
                     } else {
                         _pokemonList.value = pokes
                     }
                 }
-
             } catch (e: Exception) {
-                println("Error al obtener la lista de Pokémon de la generación ${generationId}: ${e.message}")
+                println("Error al obtener la lista de Pokémon: ${e.message}")
             }
         }
     }
@@ -113,18 +100,14 @@ class PokemonViewModel (private val pokesRepository: PokesRepository) : ViewMode
 
         viewModelScope.launch {
             try {
-                // 🔹 Buscar en Room primero
                 pokesRepository.getPokeStream(pokemon.id.toString()).collect { pokemonFromDb ->
                     if (pokemonFromDb != null && pokemonFromDb.type.isNotEmpty()) {
-                        // 🔹 Si hay datos en Room, usarlos y evitar la API
                         _selectedPokemon.value = pokemonFromDb
                     } else {
-                        // 🔹 Si no hay datos, llamar a la API
                         val pokemonDetail = withContext(Dispatchers.IO) {
                             RetrofitInstance.api.getPokemonDetail(pokemon.name.lowercase())
                         }
 
-                        // 🔹 Obtener la lista de tipos desde la API
                         val typeList = pokemonDetail.types.map { typeInfo ->
                             withContext(Dispatchers.IO) {
                                 val typeResponse = RetrofitInstance.api.getTypeById(typeInfo.type.name.lowercase())
@@ -143,17 +126,13 @@ class PokemonViewModel (private val pokesRepository: PokesRepository) : ViewMode
                             "Sin encuentros disponibles"
                         }
 
-                        // 🔹 Crear un objeto actualizado con los nuevos datos
                         val updatedPokemon = pokemon.copy(
                             type = typeList,
                             ability = abilities.joinToString(", "),
                             encounter = encounters
                         )
 
-                        // 🔹 Guardar en Room
                         pokesRepository.updatePoke(updatedPokemon)
-
-                        // 🔹 Actualizar la UI con los datos obtenidos
                         _selectedPokemon.value = updatedPokemon
                     }
                 }

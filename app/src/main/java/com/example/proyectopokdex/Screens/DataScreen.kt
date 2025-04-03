@@ -27,6 +27,11 @@ import com.example.proyectopokdex.R
 import com.example.proyectopokdex.entities.MyPoke
 import com.example.proyectopokdex.navigation.AppScreens
 import com.example.proyectopokdex.retrofit.PokemonViewModel
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun DataScreen (navController: NavController, viewModel: PokemonViewModel){
@@ -77,6 +82,9 @@ fun Stats(
     navController: NavController,
     poke: MyPoke
 ) {
+    val context = LocalContext.current
+    val isConnected = isInternetAvailable(context) // Evaluamos la conexión solo una vez
+
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -88,12 +96,10 @@ fun Stats(
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .offset(y = (-100).dp)
+            modifier = Modifier.offset(y = (-100).dp)
         ) {
             Column(
-                modifier = Modifier
-                    .weight(1f)
+                modifier = Modifier.weight(1f)
             ) {
                 Text(
                     text = "Name: ${poke.name}",
@@ -104,37 +110,53 @@ fun Stats(
                     style = TextStyle(fontSize = 18.sp)
                 )
             }
-            AsyncImage(
-                model = poke.imageUrl,
-                contentDescription = "Imagen de ${poke.name}",
-                modifier = Modifier
-                    .weight(1f)
-            )
+                AsyncImage(
+                    model = poke.imageUrl,
+                    contentDescription = "Imagen de ${poke.name}",
+                    modifier = Modifier
+                        .size(150.dp)
+                )
         }
-        Row(){
+
+        // Nueva fila para habilidades y botón
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Text(
                 text = "Abilities: ${poke.ability}",
                 style = TextStyle(fontSize = 18.sp),
-                modifier = Modifier
-                    .weight(1f)
+                modifier = Modifier.weight(1f)
             )
-            Button(onClick = {
-                viewModel.setSelectedPokemon(poke) // Establecer el Pokémon seleccionado
-                navController.navigate(AppScreens.EncountersScreen.route)
-            },
-                modifier = Modifier
-                    .weight(1f)
-            ){
+            Button(
+                onClick = {
+                    viewModel.setSelectedPokemon(poke)
+                    navController.navigate(AppScreens.EncountersScreen.route)
+                },
+                modifier = Modifier.weight(1f)
+            ) {
                 Text(text = "Encounters")
             }
         }
     }
 }
 
-/*
+    /*
 @Preview(showBackground = true)
 @Composable
 fun DataScreenPreview(){
     DataScreen(navController: NavController, poke: MyPoke)
 }
 */
+
+    fun isInternetAvailable(context: Context): Boolean {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = connectivityManager.activeNetwork ?: return false
+        val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+
+        return capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
+    }
