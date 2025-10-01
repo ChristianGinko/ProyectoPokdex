@@ -25,7 +25,7 @@ interface PokeApiService {
     @GET("pokemon/{id}/encounters")
     suspend fun getPokemonEncounters(@Path("id") id: String): List<LocationAreaEncounter>
     @GET("type/{id}/")
-    suspend fun getTypeById(@Path("id") id: String): TypeResponse
+    suspend fun getTypeById(@Path("id") typeId: String): TypeResponse
 }
 
 object RetrofitInstance {
@@ -48,9 +48,15 @@ class PokemonViewModel(private val pokesRepository: PokesRepository) : ViewModel
     val selectedPokemon: State<MyPoke?> = _selectedPokemon
 
     private var generationId: String = "1" // Por defecto, generación 1 (Kanto)
+    private var typeId: String = "1"
 
     fun setGeneration(generationId: String) {
         this.generationId = generationId
+        fetchPokemon()
+    }
+
+    fun setType(typeId: String) {
+        this.typeId = typeId
         fetchPokemon()
     }
 

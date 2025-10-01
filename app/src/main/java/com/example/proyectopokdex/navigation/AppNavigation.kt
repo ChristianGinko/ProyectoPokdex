@@ -14,6 +14,8 @@ import com.example.proyectopokdex.Screens.MainScreen
 import com.example.proyectopokdex.Screens.SplashScreen
 import com.example.proyectopokdex.Screens.EncountersScreen
 import com.example.proyectopokdex.Screens.LeagueScreen
+import com.example.proyectopokdex.Screens.MainList
+import com.example.proyectopokdex.Screens.TypeScreen
 import com.example.proyectopokdex.retrofit.PokemonViewModel
 
 @Composable
@@ -44,6 +46,12 @@ fun AppNavigation() {
         }
         composable(AppScreens.LeagueScreen.route) {
             LeagueScreen(navController, pokemonViewModel)
+        }
+        composable(AppScreens.MainList.route) {
+            MainList(navController)
+        }
+        composable(AppScreens.TypeScreen.route){
+            TypeScreen(navController, pokemonViewModel)
         }
     }
 }

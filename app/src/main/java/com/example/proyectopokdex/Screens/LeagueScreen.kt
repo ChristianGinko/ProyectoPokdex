@@ -99,6 +99,11 @@ fun Structures(navController: NavController, viewModel: PokemonViewModel) {
             }) {
                 Text(text = "Paldea")
             }
+            Button(onClick = {
+                navController.navigate(AppScreens.MainList.route)
+            }) {
+                Text(text = "Back")
+            }
         }
     }
 }

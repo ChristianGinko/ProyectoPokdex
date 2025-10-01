@@ -6,4 +6,6 @@ sealed class AppScreens(val route: String) {
     object DataScreen : AppScreens("data_screen")
     object EncountersScreen : AppScreens("encounters_screen")
     object LeagueScreen : AppScreens("league_screen")
+    object MainList : AppScreens("main_list")
+    object TypeScreen : AppScreens("type_screen")
 }

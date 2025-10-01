@@ -9,6 +9,11 @@ data class GenerationResponse(
     @SerializedName("pokemon_species") val pokemonSpecies: List<PokemonSpecies>
 )
 
+sealed class FetchMode {
+    data class Generation(val id: String) : FetchMode()
+    data class Type(val id: String) : FetchMode()
+}
+
 // Representación de un Pokémon en la lista de la Generación 1
 data class PokemonSpecies(
     val name: String,
@@ -25,6 +30,8 @@ data class PokeTypes(
     val name: String,
     val url: String
 )
+
+
 
 // Respuesta cuando pedimos detalles de un Pokémon específico
 data class PokemonDetailResponse(
